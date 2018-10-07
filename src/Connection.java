@@ -1,4 +1,4 @@
-// Class which creates listening and connection sockets and two new threads for each new client connection
+/** Class which creates listening and connection sockets and two new threads for each new client connection */
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -18,7 +18,7 @@ public class Connection extends Thread {
 		this.egressHostInfo = config.getEgress();
 	}
 	
-	// Make new connection to a client
+	// Makes new connections to clients
 	public void connectClient(String alias) {
 		String ingressAddress = ingressHostInfo.get(alias)[0];
 		int ingressPort = Integer.parseInt(ingressHostInfo.get(alias)[1]);
@@ -27,7 +27,7 @@ public class Connection extends Thread {
 		ServerSocket srvSock;
         InetAddress serverAddress;
         
-        // Setup the server side connection data
+        // Sets up the server side connection data
         try {
             serverAddress = InetAddress.getByName(ingressAddress);
         } catch (UnknownHostException e) {
@@ -37,7 +37,7 @@ public class Connection extends Thread {
             return;
         }
 
-        // Make the server socket with a maximum queue of 16 connections
+        // Makes the server socket with a maximum queue of 16 connections
         try {
 			srvSock = new ServerSocket(ingressPort, 16, serverAddress);
 		} catch (IOException e) {
@@ -47,22 +47,20 @@ public class Connection extends Thread {
             return;
 		}
         
-        // Read and handle connections forever
+        // Reads and handles connections forever
         while(true) {
-            // Get the next connection
-        	// Create new socket that is connected to a particular client
 			try {
 				Socket listeningSock = srvSock.accept();
 				
-				// Record new connection in audit log
+				// Records new connection in audit log
 				if (listeningSock.isConnected()) {
 					Audit.recordNewConnection(listeningSock, egressAddress, egressPort);
 				}
 				
-				// Make new connection to server from Mirror
+				// Makes new connection to server from the Mirror
 				Socket connectingSock = connectServer(alias, egressAddress, egressPort);
 				
-				// Create two new threads for new connection
+				// Creates two new threads for the new connection
 				createThreads(listeningSock, connectingSock);
 			} catch (IOException e1) {
 				 System.err.println("Could not accept connection.");
@@ -72,12 +70,13 @@ public class Connection extends Thread {
 		}
      }
 	
+	// Makes a new connection to the server
 	private Socket connectServer(String alias, String egressAddress, int egressPort) {
         InetAddress serverAddress = null;
         InetSocketAddress endpoint;
         Socket connectingSock;
         
-        // Setup the server side connection data
+        // Sets up the server side connection data
         try {
 			serverAddress = InetAddress.getByName(egressAddress);
 		} catch (UnknownHostException e1) {
@@ -86,11 +85,9 @@ public class Connection extends Thread {
 			System.exit(1);
 		}
         endpoint = new InetSocketAddress(serverAddress, egressPort);
-        
-        //// Make the TCP connection
         connectingSock = new Socket();
         
-        // Make the connection to server
+        // Makes connection to server
         try {
 			connectingSock.connect(endpoint);
 		} catch (IOException e1) {
@@ -107,11 +104,11 @@ public class Connection extends Thread {
 		Router rel = new Router(true, listeningSock, connectingSock);
 		Router ret = new Router(false, connectingSock, listeningSock);
 		
-        // Start the threads
+        // Starts the threads
         rel.start();
         ret.start();
         
-        // Wait until the threads have finished (if necessary)
+        // Waits until the threads have finished (if necessary)
 //        try {
 //            rel.join();
 //            ret.join();

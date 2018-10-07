@@ -1,4 +1,4 @@
-// Mirror class which serves as a proxy for ingress and egress connections
+/** Mirror class which serves as a proxy for ingress and egress connections */
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class Mirror {
 		HashMap<String, String[]> ingressHostInfo = config.getIngress();
 		HashMap<String, String[]> egressHostInfo = config.getEgress();
 		
-		// Check if alias provided in command line is in configuration file for both ingress and egress
+		// Checks if alias provided in command line is in configuration file for both ingress and egress
 		if (!ingressHostInfo.containsKey(args[0]) || !egressHostInfo.containsKey(args[0])) {
 			System.err.println("Alias " + args[1] + " could not be found for ingress and/or egress");
             System.exit(1);

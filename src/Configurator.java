@@ -1,4 +1,4 @@
-// Class which reads, parses, and stores data from configuration file
+/** Class which reads, parses, and stores data from configuration file */
 
 import java.io.File;
 import java.io.FileNotFoundException;

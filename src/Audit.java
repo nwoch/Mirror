@@ -1,4 +1,4 @@
-// Class which generates audit log entries
+/** Class which generates audit log entries */
 
 import java.net.Socket;
 import java.sql.Timestamp;
